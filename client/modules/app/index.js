@@ -8,6 +8,10 @@ const routes = {
   countriesEdit: {path: '/countries/:countryId', Component: CountriesEdit},
 };
 
+const authRoutes = [
+
+];
+
 
 export default function ({FlowRouter, Meteor, mount}) {
   const authRequired = (ctx, redirect) => {

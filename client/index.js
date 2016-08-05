@@ -1,9 +1,9 @@
-import scope from './config/scope';
+import scope from './config';
 
 
 import initAuthModule from './modules/auth';
-import initAppModule from './modules/app';
+import initLocalesModule from './modules/locales';
 
 
 initAuthModule(scope);
-initAppModule(scope);
+initLocalesModule(scope);
