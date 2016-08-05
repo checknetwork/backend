@@ -1,10 +1,19 @@
-###Setup
-Webpack is wrapped into **dev-env** package
-No need to install, configure or raun it manually.
-Quick setup
-```npm prune``` to be shure old presets are removed
-```npm i``` installs new packages
-```npm run dev``` run meteor (server) and ecmascript bundler (client)
+##Check Network Backend
 
-###Note!
-There are no unnecessary Meteor packages on the client! Use pure DDP library to communicate w server
+#####Setup
+1. Install Meteor
+2. Clone Repo
+3. `cd <project folder>`
+4. `npm i`
+
+
+#####Run dev
+1. `cd <project folder>`
+2. `npm start`
+
+#####Deploy stage
+1. `cd <project folder>`
+2. `npm i && npm rebuild` (make shure you have Python 2.7, Node 4, node-gyp, build-essential)
+3. `cd <project folder>/.deploy`
+4. make shure you have **meteor up** installed and run `mup deploy --server stage`
+
