@@ -1,0 +1,47 @@
+{
+  "name": "TheCheckNetworkClient",
+  "version": "0.0.1",
+  "description": "The Check Network Client",
+  "options": {
+    "mocha": "--require mocha-runner/mocha_runner __tests__/**/*.js"
+  },
+  "scripts": {
+    "start": "meteor run --settings settings.json",
+    "build": "webpack -p --config webpack.prod.conf.js",
+    "lint": "eslint ./client ./server",
+    "testonly": "BABEL_DISABLE_CACHE=1 NODE_ENV=test mocha $npm_package_options_mocha",
+    "test": "npm run lint && npm run testonly"
+  },
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "eslint": "^3.2.0",
+    "eslint-plugin-jsx-a11y": "^2.0.1",
+    "is-my-json-valid": "^2.13.1",
+    "meteor-node-stubs": "^0.2.3",
+    "moment": "^2.13.0",
+    "react": "^15.1.0",
+    "react-bootstrap": "^0.30.0",
+    "react-dom": "^15.1.0",
+    "react-mounter": "^1.2.0",
+    "request": "^2.72.0",
+    "tracker-component": "^1.3.21"
+  },
+  "devDependencies": {
+    "babel-core": "^6.9.1",
+    "babel-plugin-react-require": "^2.1.0",
+    "babel-polyfill": "^6.9.1",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-meteor": "^6.9.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-2": "^6.5.0",
+    "babel-root-slash-import": "^1.0.0",
+    "babel-runtime": "^6.9.2",
+    "eslint": "^3.2.0",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.8.1",
+    "eslint-plugin-jsx-a11y": "^2.0.1",
+    "eslint-plugin-react": "^5.1.1",
+    "mupx": "^1.5.3"
+  },
+  "private": true
+}

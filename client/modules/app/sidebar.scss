@@ -1,0 +1,26 @@
+.sidebar--container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+
+  & .sidebar--body {
+    width: 240px;
+    position: relative;
+    height: 100%;
+    padding: 56px 0 0 3px;
+    background-color: white;
+
+    & .sidebar-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 56px;
+    }
+  }
+
+  & .sidebar--backdrop {
+
+  }
+}

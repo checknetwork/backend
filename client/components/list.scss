@@ -1,0 +1,24 @@
+
+.list--container {
+  & .list--header {
+
+  }
+
+  & .list--body {
+
+  }
+
+  & .list--footer {
+
+  }
+
+  & .list--thumb {
+    width: 64px;
+    height: 64px;
+  }
+
+  & .list--icon {
+    width: 32px;
+    height: 32px;
+  }
+}

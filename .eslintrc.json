@@ -1,0 +1,40 @@
+{
+  "extends": "airbnb",
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+  "globals": {
+    "_": true
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "object-curly-spacing": ["warn", "never", {
+      "objectsInObjects": false,
+      "arraysInObjects": true
+    }],
+    "prefer-arrow-callback": ["off"],
+    "no-underscore-dangle": ["warn"],
+    "block-spacing": ["off"],
+    "callback-return": ["error"],
+    "no-unused-vars": ["warn"],
+    "arrow-body-style": ["off"],
+    "import/no-unresolved": ["off"],
+    "react/prop-types": ["off"],
+    "react/react-in-jsx-scope": ["off"],
+    "react/jsx-space-before-closing": ["off"],
+    "react/prefer-es6-class": ["off"],
+    "react/jsx-boolean-value": ["off"]
+  }
+}
