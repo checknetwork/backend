@@ -3,7 +3,7 @@ import {ReactiveDict} from 'meteor/reactive-dict';
 export default function initAppState() {
   const AppState = new ReactiveDict();
 
-  AppState.set('selectedShop', null);
+  AppState.set('activeShop', null);
 
   const handleResize = () => {
     const view = document.querySelector('#view');

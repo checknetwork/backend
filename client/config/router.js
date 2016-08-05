@@ -1,4 +1,5 @@
 import {FlowRouter} from 'meteor/kadira:flow-router';
+import {Accounts} from 'meteor/accounts-base';
 
 const DEFAULT_ROUTES = {
   LOGIN: '/login',
@@ -32,6 +33,18 @@ export default function initRouter({Models, Meteor}) {
       }
     };
   };
+
+  Accounts.onLogin(() => {
+    const {requiredRoutePathname} = FlowRouter;
+    if (requiredRoutePathname) {
+      FlowRouter.requiredRoutePathname = null;
+      FlowRouter.go(FlowRouter.requiredRoutePathname);
+    }
+  });
+
+  Accounts.onLogout(() => {
+    FlowRouter.go(DEFAULT_ROUTES.INDEX);
+  });
 
 
   return FlowRouter;

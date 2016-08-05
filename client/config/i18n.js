@@ -1,10 +1,7 @@
-import 'meteor/tracker';
 
-import {Meteor} from 'meteor/meteor';
-import Tracker from 'tracker-component';
-import {I18n, Countries} from '/models';
+export default function ({AppState, Meteor, Models, Tracker}) {
+  const {I18n, Countries} = Models;
 
-export default function (AppState) {
   const changeCurrentLang = (lang = 'en') => {
     AppState.set({lang});
   };
@@ -134,5 +131,7 @@ export default function (AppState) {
   }
 
   I18n.tag = I18nTag;
+
+  return I18n;
 }
 
