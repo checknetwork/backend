@@ -14,9 +14,6 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
-    "eslint": "^3.2.0",
-    "eslint-plugin-jsx-a11y": "^2.0.1",
-    "is-my-json-valid": "^2.13.1",
     "meteor-node-stubs": "^0.2.3",
     "moment": "^2.13.0",
     "react": "^15.1.0",
@@ -36,12 +33,11 @@
     "babel-preset-stage-2": "^6.5.0",
     "babel-root-slash-import": "^1.0.0",
     "babel-runtime": "^6.9.2",
-    "eslint": "^3.2.0",
+    "eslint": "^3.2.2",
     "eslint-config-airbnb": "^9.0.1",
     "eslint-plugin-import": "^1.8.1",
     "eslint-plugin-jsx-a11y": "^2.0.1",
-    "eslint-plugin-react": "^5.1.1",
-    "mupx": "^1.5.3"
+    "eslint-plugin-react": "^5.1.1"
   },
   "private": true
 }
