@@ -1,16 +1,31 @@
 import React from 'react';
+import {Panel, Button, ButtonToolbar} from 'react-bootstarp';
+import {PageFormInput} from '/client/components';
 
-export default function initLogin({i18n}) {
+export default function initLogin({i18n, Utils}) {
   class Login extends React.Component {
     constructor() {
       super();
 
-      this.state = {};
+      this.state = {errors: null};
+    }
+
+    onSubmit(e) {
+
     }
 
     render() {
-      return (
+      const {errors} = this.state;
 
+      return (
+        <form action="/" name="login" onSubmit={this.onSubmit}>
+          <PageFormInput name="email" label={i18n.tag('common.login.email')} error={errors.email}/>
+          <PageFormInput name="password" type="password" label={i18n.tag('common.login.password')} error={errors.password}/>
+          <ButtonToolbar>
+            <Button type="submit">{i18n.tag('common.login.login')}</Button>
+            <Button type="button">{i18n.tag('common.login.forgotpassword')}</Button>
+          </ButtonToolbar>
+        </form>
       );
     }
   }
