@@ -1,9 +1,5 @@
 
-import Page from './page';
-import List from './list';
-
-
-export {
-  Page,
-  List,
-};
+export * from './alert';
+export * from './list';
+export * from './page';
+export * from './portlet';

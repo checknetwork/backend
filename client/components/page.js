@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default ({title, actions, children}) => {
+export const Page = ({title, actions, children}) => {
   const renderActions = () => {
     const actionsMap = _.map(actions, ({label, primary, href, handler}, key) => (
       <li key={key} onClick={handler}>

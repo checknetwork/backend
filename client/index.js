@@ -6,7 +6,7 @@ import initAuthModule from './modules/auth';
 import initLocalesModule from './modules/locales';
 
 
-scope.Layout = initLayout(scope);
+initLayout(scope);
 
 initAuthModule(scope);
 initLocalesModule(scope);

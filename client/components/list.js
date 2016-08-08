@@ -10,7 +10,7 @@ const getStructure = (columns) => {
   return {params, fields};
 };
 
-export default ({columns, data}) => {
+export const List = ({columns, data}) => {
   const struct = getStructure(columns);
   const fields = _.omit(columns, 'thumb', 'icon', 'check', 'actions', 'more');
 

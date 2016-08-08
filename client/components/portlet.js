@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default ({icon, footer, title, actions, children}) => {
+export const Portlet =  ({icon, footer, title, actions, children}) => {
   const Icon = icon ? (<i className={icon}/>) : (null);
 
   const Footer = footer ?
