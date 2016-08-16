@@ -12,8 +12,8 @@ export const FormField = (field) => {
   }
 
   const note = field.note || field.error || field.success || field.warning;
-  const renderNote = note ? (<HelpBlock>{note}</HelpBlock>) : (null);
-
+  const label = field.label || field.hint;
+  const hint = field.hint || field.label;
   const type = field.type || 'string';
   const others = {
     disabled: field.disabled,
@@ -21,31 +21,87 @@ export const FormField = (field) => {
     name: field.name,
   };
 
-  const others
+  const renderLabel = () => {
+    return label ? (<ControlLabel>{label}</ControlLabel>) : (null);
+  };
+
+  const renderNote = () => {
+    return note ? (<HelpBlock>{note}</HelpBlock>) : (null);
+  };
 
   const renderInput = () => {
-    return (<FormControl componentType="input" type={type} placeholder={field.hint} {...others}/>);
+    others.type = type === 'string' ? 'text' : type;
+    others.value = field.value;
+    others.placeholder = hint;
+    return (<FormControl componentType="input" {...others}/>);
   };
 
   const renderText = () => {
+    others.value = field.value;
+    others.placeholder = hint;
+    return (<FormControl componentType="textarea" {...others}/>);
+  };
 
+  const renderSelect = () => {
+    others.value = field.value;
+    others.placeholder = hint;
+    const options = _.map(field.options, ({value, text}) => {
+      return (<option key={value} value={value}>{text || value}</option>);
+    });
+    return (<FormControl componentType="select" {...others}>{options}</FormControl>);
+  };
+
+
+  const renderControl = () => {
+    if (['string', 'number', 'date', 'email', 'password'].includes(type)) {
+      return renderInput();
+    }
+
+    if (type === 'text') {
+      return renderText();
+    }
+
+    if (type === 'select') {
+      return renderSelect();
+    }
+
+    if (type === 'static') {
+      return (<FormControl.Static>{field.value}</FormControl.Static>);
+    }
+
+    return (null);
   };
 
   return (
-    <FormGroup controlId={field.name} validationState={state}>
-      <ControlLabel>{label}</ControlLabel>
-      <FormControl type={type} value={this.state.value} placeholder={hint}/>
-      <FormControl.Feedback />
-      {hintText}
+    <FormGroup controlId={field.name} key={name} validationState={state}>
+      {renderLabel()}
+      {renderControl()}
+      {renderNote()}
     </FormGroup>);
 };
 
-export const FormFields = ({fields, errors = {}}) => {
+export const FormFields = ({fields = {}, data = {}, errors = {}}) => {
+  return _.map(fields, (field, key) => {
+    const name = field.name || key;
+    const value = field.value || data[name];
+    const error = field.error || errors[name];
 
+    const fieldProps = _.extend({}, field, {name, value, error});
+    return (<FormField key={name} {...fieldProps}/>);
+  });
 };
 
 export const parseForm = (form = {}, ...names) => {
   const {elements} = form;
 
-  return _.chain()
+  return _.chain(elements)
+    .filter(({name, tagName = ''}) => {
+      return name && (['input', 'select', 'textarea'].includes(tagName.toLowerCase()))
+        && (!names || (names && names.includes(name)));
+    })
+    .reduce((memo, {name, value, checked, valueAsNumber, valueAsDate, innerText}) => {
+      const res = valueAsDate || valueAsNumber || value || checked || innerText;
+      return _.extend({}, memo, {[`${name}`]: res});
+    }, {})
+    .value();
 };
