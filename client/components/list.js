@@ -59,7 +59,7 @@ export const List = ({columns, data}) => {
 
         return (
           <div key={key} className={columnClass}>
-            <h6>{props.title || key}</h6>
+            <h6>{props.label || key}</h6>
           </div>
         );
       });

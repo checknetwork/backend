@@ -1,7 +1,9 @@
 import React from 'react';
 import {Collapse} from 'react-bootstrap';
+import {Meteor} from 'meteor/meteor';
+import {Users} from '/models';
 
-export default function initSidebar({Meteor, Tracker, Users, AppState}) {
+export default function initSidebar(AppState, Tracker) {
   const DEFAULT_ACTIVE_ITEM = 'dashboard';
   const {ROLES} = Users;
 

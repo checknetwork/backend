@@ -21,7 +21,6 @@ initCountries();
 initFeeds();
 initShops();
 
-
 Meteor.startup(() => {
   const {MIGRATE_VERSION = 'latest'} = Meteor.settings;
   const {CRON_DISABLED = false} = Meteor.settings;

@@ -1,8 +1,22 @@
-import {FormControl, FormGroup, ControlLabel, HelpBlock} from 'react-bootstarp';
+import {FormControl, FormGroup, ControlLabel, HelpBlock} from 'react-bootstrap';
 
+export const parseForm = (form = {}, ...names) => {
+  const {elements} = form;
 
-export const FormField = (field) => {
-  let state = '';
+  return _.chain(elements)
+    .filter(({name, tagName = ''}) => {
+      return name && (['input', 'select', 'textarea'].includes(tagName.toLowerCase()))
+        && (!names || (names && names.includes(name)));
+    })
+    .reduce((memo, {name, value, checked, valueAsNumber, valueAsDate, innerText}) => {
+      const res = valueAsDate || valueAsNumber || value || checked || innerText;
+      return _.extend({}, memo, {[`${name}`]: res});
+    }, {})
+    .value();
+};
+
+export const Field = (field) => {
+  let state;
   if (field.state === 'error' || field.error) {
     state = 'error';
   } else if (field.state === 'success' || field.success) {
@@ -33,7 +47,7 @@ export const FormField = (field) => {
     others.type = type === 'string' ? 'text' : type;
     others.value = field.value;
     others.placeholder = hint;
-    return (<FormControl componentType="input" {...others}/>);
+    return (<FormControl {...others}/>);
   };
 
   const renderText = () => {
@@ -72,36 +86,32 @@ export const FormField = (field) => {
     return (null);
   };
 
+  const groupProps = {
+    controlId: field.name,
+    key: name,
+  };
+
+  if (state) {
+    groupProps.validationState = state;
+  }
+
   return (
-    <FormGroup controlId={field.name} key={name} validationState={state}>
+    <FormGroup {...groupProps}>
       {renderLabel()}
       {renderControl()}
       {renderNote()}
     </FormGroup>);
 };
 
-export const FormFields = ({fields = {}, data = {}, errors = {}}) => {
-  return _.map(fields, (field, key) => {
+export const Fields = ({fields = {}, data = {}, errors = {}}) => {
+  const fieldsList = _.map(fields, (field, key) => {
     const name = field.name || key;
     const value = field.value || data[name];
     const error = field.error || errors[name];
 
     const fieldProps = _.extend({}, field, {name, value, error});
-    return (<FormField key={name} {...fieldProps}/>);
+    return (<Field key={name} {...fieldProps}/>);
   });
-};
 
-export const parseForm = (form = {}, ...names) => {
-  const {elements} = form;
-
-  return _.chain(elements)
-    .filter(({name, tagName = ''}) => {
-      return name && (['input', 'select', 'textarea'].includes(tagName.toLowerCase()))
-        && (!names || (names && names.includes(name)));
-    })
-    .reduce((memo, {name, value, checked, valueAsNumber, valueAsDate, innerText}) => {
-      const res = valueAsDate || valueAsNumber || value || checked || innerText;
-      return _.extend({}, memo, {[`${name}`]: res});
-    }, {})
-    .value();
+  return (<div>{fieldsList}</div>);
 };
