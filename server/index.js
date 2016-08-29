@@ -7,6 +7,7 @@ import initConfigs from './configs';
 
 // import modules
 import initAccountsAndUsers from './modules/users';
+import initI18n from './modules/i18n';
 import initCountries from './modules/countries';
 import initFeeds from './modules/feeds';
 import initShops from './modules/shops';
@@ -17,6 +18,7 @@ initConfigs();
 
 // init modules
 initAccountsAndUsers();
+initI18n();
 initCountries();
 initFeeds();
 initShops();

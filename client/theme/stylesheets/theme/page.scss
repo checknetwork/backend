@@ -12,6 +12,11 @@ $offsets: 74px;
     overflow-x: hidden;
     overflow-y: auto;
 
+    & > .container {
+      padding-top: 15px;
+      padding-bottom: 15px;
+    }
+
     &.has-header {
       padding-top: $offsets;
     }

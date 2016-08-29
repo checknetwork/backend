@@ -1,7 +1,7 @@
 import React from 'react';
 import {Collapse} from 'react-bootstrap';
 import {Meteor} from 'meteor/meteor';
-import {Users} from '/models';
+import {Users, I18n} from '/models';
 
 export default function initSidebar(AppState, Tracker) {
   const DEFAULT_ACTIVE_ITEM = 'dashboard';
@@ -9,98 +9,98 @@ export default function initSidebar(AppState, Tracker) {
 
   const submenuMap = {
     dashboard: {
-      title: 'Dashboard',
+      title: I18n.tag('admin.submenu.dashboard'),
       icon: 'dashboard',
       filter: ({role}) => [ROLES.SUPERADMIN, ROLES.PARTNERS].includes(role),
       items: {
-        overwiev: {label: 'overwiev', link: '/dashboard/overwiev'},
-        analytics: {label: 'analytics', link: '/dashboard/analytics'},
-        app: {label: 'app health', link: '/dashboard/app'},
-        server: {label: 'server state', link: '/dashboard/server'},
+        overwiev: {label: I18n.tag('admin.submenu.overwiev'), link: '/dashboard/overwiev'},
+        analytics: {label: I18n.tag('admin.submenu.analytics'), link: '/dashboard/analytics'},
+        app: {label: I18n.tag('admin.submenu.app health'), link: '/dashboard/app'},
+        server: {label: I18n.tag('admin.submenu.serverState'), link: '/dashboard/server'},
       },
     },
 
     shop: {
-      title: 'Shop',
+      title: I18n.tag('admin.submenu.shop'),
       icon: 'shopping-cart',
       filter: ({role, shop}) => [ROLES.SUPERADMIN].includes(role) && Boolean(shop),
       items: {
-        settings: {label: 'settings', link: '/shop/settings'},
-        categories: {label: 'categories', link: '/shop/categories'},
-        brands: {label: 'brands', link: '/shop/brands'},
-        products: {label: 'products', link: '/shop/products'},
-        posts: {label: 'magazine posts', link: '/shop/posts'},
-        analytics: {label: 'analytics', link: '/shop/analytics'},
+        settings: {label: I18n.tag('admin.submenu.settings'), link: '/shop/settings'},
+        categories: {label: I18n.tag('admin.submenu.categories'), link: '/shop/categories'},
+        brands: {label: I18n.tag('admin.submenu.brands'), link: '/shop/brands'},
+        products: {label: I18n.tag('admin.submenu.products'), link: '/shop/products'},
+        posts: {label: I18n.tag('admin.submenu.magazinePosts'), link: '/shop/posts'},
+        analytics: {label: I18n.tag('admin.submenu.analytics'), link: '/shop/analytics'},
       },
     },
 
     sites: {
-      title: 'Sites',
+      title: I18n.tag('admin.submenu.sites'),
       icon: 'television',
       filter: ({role}) => [ROLES.SUPERADMIN].includes(role),
       items: {
-        sites: {label: 'sites', link: '/sites/sites'},
-        domains: {label: 'domains', link: '/sites/domains'},
-        settings: {label: 'settings', link: '/sites/settings'},
+        sites: {label: I18n.tag('admin.submenu.sites'), link: '/sites/sites'},
+        domains: {label: I18n.tag('admin.submenu.domains'), link: '/sites/domains'},
+        settings: {label: I18n.tag('admin.submenu.settings'), link: '/sites/settings'},
       },
     },
 
     contents: {
-      title: 'Contents',
+      title: I18n.tag('admin.submenu.contents'),
       icon: 'inbox',
       filter: ({role}) => [ROLES.SUPERADMIN].includes(role),
       items: {
-        posts: {label: 'magazine posts', link: '/contents/posts'},
-        buckets: {label: 'buckets health', link: '/contents/buckets'},
-        settings: {label: 'settings', link: '/contents/settings'},
+        posts: {label: I18n.tag('admin.submenu.magazinePosts'), link: '/contents/posts'},
+        buckets: {label: I18n.tag('admin.submenu.bucketsHealth'), link: '/contents/buckets'},
+        settings: {label: I18n.tag('admin.submenu.settings'), link: '/contents/settings'},
       },
     },
 
     partners: {
-      title: 'Partners',
+      title: I18n.tag('admin.submenu.partners'),
       icon: 'users',
       filter: ({role}) => [ROLES.SUPERADMIN].includes(role),
       items: {
-        partners: {label: 'partners', link: '/partners/partners'},
-        settings: {label: 'settings', link: '/partners/settings'},
+        partners: {label: I18n.tag('admin.submenu.partners'), link: '/partners/partners'},
+        settings: {label: I18n.tag('admin.submenu.settings'), link: '/partners/settings'},
       },
     },
 
     seo: {
-      title: 'SEO config',
+      title: I18n.tag('admin.submenu.seoConfig'),
       icon: 'cog',
       filter: ({role}) => [ROLES.SUPERADMIN].includes(role),
       items: {
-        settings: {label: 'settings', link: '/seo/settings'},
-        analytics: {label: 'analytics', link: '/seo/analytics'},
-        overwiev: {label: 'overwiev', link: '/seo/overwiev'},
-        server: {label: 'SSR config', link: '/seo/ssrconfig'},
+        settings: {label: I18n.tag('admin.submenu.settings'), link: '/seo/settings'},
+        analytics: {label: I18n.tag('admin.submenu.analytics'), link: '/seo/analytics'},
+        overwiev: {label: I18n.tag('admin.submenu.overwiev'), link: '/seo/overwiev'},
+        server: {label: I18n.tag('admin.submenu.ssrConfig'), link: '/seo/ssrconfig'},
       },
     },
 
     locales: {
-      title: 'Locales',
+      title: I18n.tag('admin.submenu.locales'),
       icon: 'globe',
       filter: ({role}) => [ROLES.SUPERADMIN].includes(role),
       items: {
-        countries: {label: 'countries', link: '/locales/countries'},
-        i18n: {label: 'i18n', link: '/locales/i18n'},
-        analytics: {label: 'analytics', link: '#'},
+        countries: {label: I18n.tag('admin.submenu.countries'), link: '/locales/countries'},
+        i18n: {label: I18n.tag('admin.submenu.i18n'), link: '/locales/i18n'},
+        analytics: {label: I18n.tag('admin.submenu.analytics'), link: '#'},
       },
     },
 
     users: {
-      title: 'Users',
+      title: I18n.tag('admin.submenu.users'),
       icon: 'user',
       filter: ({role}) => [ROLES.SUPERADMIN].includes(role),
       items: {
-        users: {label: 'users', link: '/users/users'},
-        settings: {label: 'settings', link: '/users/settings'},
+        users: {label: I18n.tag('admin.submenu.users'), link: '/users/users'},
+        settings: {label: I18n.tag('admin.submenu.settings'), link: '/users/settings'},
       },
     },
 
     logout: {
-      title: 'Logout',
+      title: I18n.tag('admin.submenu.logout'),
       icon: 'toggle-left',
       link: '/logout',
     },
@@ -130,7 +130,7 @@ export default function initSidebar(AppState, Tracker) {
     }
 
     renderTopNav(scope) {
-      _.map(submenuMap, ({title, icon, filter, items, link}, key) => {
+      return _.map(submenuMap, ({title, icon, filter, items, link}, key) => {
         if (filter && !filter(scope)) {
           return (<div key={key}/>);
         }
@@ -145,7 +145,7 @@ export default function initSidebar(AppState, Tracker) {
         return (
           <div key={key} className="panel-sidebar-item">
             <div className="panel-heading" role="tab">
-              <a hlink={link || '#'} onClick={onClick} className="nav-link">
+              <a href={link || '#'} onClick={onClick} className="nav-link">
                 <i className={`fa fa-${icon}`}/> {title || ''}
               </a>
             </div>
@@ -163,7 +163,7 @@ export default function initSidebar(AppState, Tracker) {
 
         return (
           <li role="presentation" key={key}>
-            <a hlink={link} className="nav-link">{label}</a>
+            <a href={link} className="nav-link">{label}</a>
           </li>
         );
       });

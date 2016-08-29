@@ -16,11 +16,11 @@ Meteor.startup(() => {
     },
   });
 
-  Router.notFound = {
-    action() {
-      Router.go(Router.DEFAULT_ROUTES.LOGIN);
-    },
-  };
+  // Router.notFound = {
+  //   action() {
+  //     Router.go(Router.DEFAULT_ROUTES.LOGIN);
+  //   },
+  // };
 
   Router.start();
 });

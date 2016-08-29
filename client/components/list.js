@@ -1,87 +1,131 @@
 import React from 'react';
-import classNames from 'classnames';
+import {Grid, Row, Col, Label, ListGroup, ListGroupItem} from 'react-bootstrap';
+
+const paramsSizes = {
+  thumb: {xs: 0, md: 3},
+  check: {xs: 2, md: 1},
+  actions: {xs: 2, md: 1},
+  state: {xs: 3, md: 2},
+};
 
 const getStructure = (columns) => {
-  const fields = _.omit(columns, 'thumb', 'icon', 'check', 'actions', 'more');
-  const params = _.chain(columns)
-    .pick('thumb', 'icon', 'check', 'actions', 'more')
-    .map(() => true)
-    .value();
-  return {params, fields};
+  const params = {};
+  const fields = {};
+
+  _.each(columns, (value, key) => {
+    if (['thumb', 'icon', 'check', 'actions', 'state', 'href', 'click'].includes(key)) {
+      params[key] = true;
+    } else {
+      fields[key] = true;
+    }
+  });
+
+  const fieldSize = Math.ceil(12 / (_.size(fields) || 1));
+  return {params, fields, fieldSize};
 };
 
 export const List = ({columns, data}) => {
   const struct = getStructure(columns);
-  const fields = _.omit(columns, 'thumb', 'icon', 'check', 'actions', 'more');
 
-  const hasThumb = _.has(columns, 'thumb');
-  const hasIcon = _.has(columns, 'icon');
-  const hasCheck = _.has(columns, 'check');
-  const hasActions = _.has(columns, 'actions');
+  const fieldsSizeProps = _.reduce(paramsSizes, (memo, values, key) => {
+    return {
+      xs: struct.params[key] ? memo.xs - values.xs : memo.xs,
+      md: struct.params[key] ? memo.md - values.md : memo.md,
+    };
+  }, {xs: 12, md: 12});
 
-  const renderHeader = () => {
-    const renderLeftMedia = () => {
-      if (hasThumb) {return (<div className="list--thumb"/>);}
-      if (hasIcon) {return (<div className="list--icon"/>);}
+  const renderState = (header, item = {}) => {
+    const field = columns.state;
 
-      const onChange = (e) => {
-        const {target} = e;
-        if (columns.check) {
-          const ids = _.pick(data, '_id') || [];
+    const wrapAndRender = (child) => {
+      return (<Col {...paramsSizes.state}>{child}</Col>);
+    };
 
-          if (ids.length === 0) {
-            target.checked = false;
-          } else {
-            columns.check(ids, target.checked);
-          }
-        }
+    if (header) {
+      return wrapAndRender(field.label);
+    }
+
+    if (field.renderer) {
+      return wrapAndRender(field.renderer(item));
+    }
+    const value = field.field ? item[field.field] : item.state;
+    const state = _.reduce(field.states, (memo, values, key) => {
+      return (values && values.length && values.includes(value)) ? key : memo;
+    }, 'default');
+
+    return wrapAndRender(<Label bsStyle={state || 'default'}>{value}</Label>);
+  };
+
+  const renderField = (header, name, item = {}) => {
+    const field = columns[name];
+
+    const wrapAndRender = (child) => {
+      const props = {
+        md: struct.fieldSize,
       };
 
-      if (hasCheck) {
-        return (
-          <label className="list--thumb checkbox-inline">
-            <input type="checkbox" onChange={onChange}/>
-          </label>
-        );
+      if (!field.primary) {
+        props.xsHidden = true;
       }
-      return (null);
+
+      return (<Col key={name} {...props}>{child}</Col>);
     };
 
-    const renderBody = () => {
-      let sizes = 12;
-      const defaultSize = Math.ceil(12 / (_.size(fields) || 1));
+    if (header) {
+      return wrapAndRender(field.label);
+    }
 
-      return _.map(fields, (props, key) => {
-        const size = Math.min(props.size || defaultSize, sizes);
-        sizes -= size;
+    if (field.renderer) {
+      return wrapAndRender(field.renderer(item));
+    }
+    const value = field.field ? item[field.field] : item[name];
+    return wrapAndRender(value);
+  };
 
-        const columnClass = `col-md-${size}`;
+  const renderRow = (header, item = {}) => {
+    const checkCol = (null);
+    const stateCol = struct.params.state ? renderState(header, item) : (null);
+    const thumbCol = (null);
+    const actionsCol = (null);
 
-        return (
-          <div key={key} className={columnClass}>
-            <h6>{props.label || key}</h6>
-          </div>
-        );
-      });
-    };
+    const fieldsMap = _.map(struct.fields, (value, name) => {
+      return renderField(header, name, item);
+    });
 
-    const renderRightMedia = () => {
-      if (hasActions) {return (<div className="list--icon"/>);}
-      return (null);
-    };
+    const fieldsCol = (<Col {...fieldsSizeProps}><Grid><Row>{fieldsMap}</Row></Grid></Col>);
 
-    return (
-      <div className="media">
-        <div className="media-left">{renderLeftMedia()}</div>
-        <div className="media-body">{renderBody()}</div>
-        <div className="media-right">{renderRightMedia()}</div>
-      </div>
-    );
+    return (<Row>{checkCol}{stateCol}{thumbCol}{fieldsCol}{actionsCol}</Row>);
+  };
+
+  const renderItems = () => {
+    return _.map(data, (item, idx) => {
+      const itemProps = {};
+      if (struct.params.href) {
+        itemProps.href = columns.href(item);
+      }
+
+      if (struct.params.click) {
+        itemProps.onClick = (e) => {
+          e.preventDefault();
+          columns.click(e, item);
+        };
+      }
+
+      const key = item._id || idx || 1;
+      return (
+        <ListGroupItem key={key} {...itemProps}>
+          <Grid>{renderRow(false, item)}</Grid>
+        </ListGroupItem>
+      );
+    });
   };
 
   return (
-    <div className="list--container">
-      <div className="list--header">{renderHeader()}</div>
-    </div>
+    <ListGroup>
+      <ListGroupItem disabled>
+        <Grid>{renderRow(true)}</Grid>
+      </ListGroupItem>
+      {renderItems()}
+    </ListGroup>
   );
 };

@@ -4,7 +4,7 @@ export const Page = ({title, actions, children}) => {
   const renderActions = () => {
     const actionsMap = _.map(actions, ({label, primary, href, handler}, key) => (
       <li key={key} onClick={handler}>
-        <a href={href}>{label}</a>
+        <a href={(href || '#')}>{label}</a>
       </li>
     ));
 

@@ -1,18 +1,19 @@
 import React from 'react';
 import initSidebar from './sidebar';
+import {mountModal} from './modals';
 
 
 export default function (AppState, Tracker) {
   const Sidebar = initSidebar(AppState, Tracker);
 
-  const Root = ({content}) => {
-    const renderedContent = _.isFunction(content) ? content() : (content || null);
+  const Root = ({content, children}) => {
+    const renderedContent = (_.isFunction(content) ? content() : (content || null)) || children;
     return (<div>{renderedContent}</div>);
   };
 
 
-  const View = ({content}) => {
-    const renderedContent = _.isFunction(content) ? content() : (content || null);
+  const View = ({content, children}) => {
+    const renderedContent = (_.isFunction(content) ? content() : (content || null)) || children;
     return (<Root><Sidebar/>{renderedContent}</Root>);
   };
 
@@ -23,5 +24,5 @@ export default function (AppState, Tracker) {
     </div>
   );
 
-  return {View, Root, NotFound};
+  return {View, Root, NotFound, mountModal};
 }

@@ -3,15 +3,13 @@ import {Meteor} from 'meteor/meteor';
 import React from 'react';
 
 export default function (AppState, Tracker) {
-  const registeredLabels = {};
-
   I18n.changeLang = (lang = 'en') => {
     AppState.set({lang});
   };
 
   I18n.value = (name, lang) => {
     const labels = I18n.findOne(name);
-    if (!labels && Users.isSuperadmin(Meteor.userId())) {
+    if (Users.isSuperadmin(Meteor.userId())) {
       Meteor.call('i18nReristerLabel', name);
     }
     return (labels || {})[lang];
@@ -23,7 +21,6 @@ export default function (AppState, Tracker) {
   };
 
   I18n.tag = (name) => {
-    registeredLabels[name] = true;
     return (<span>{I18n.label(name)}</span>);
   };
 

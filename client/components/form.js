@@ -6,7 +6,7 @@ export const parseForm = (form = {}, ...names) => {
   return _.chain(elements)
     .filter(({name, tagName = ''}) => {
       return name && (['input', 'select', 'textarea'].includes(tagName.toLowerCase()))
-        && (!names || (names && names.includes(name)));
+        && (!names.length || names.includes(name));
     })
     .reduce((memo, {name, value, checked, valueAsNumber, valueAsDate, innerText}) => {
       const res = valueAsDate || valueAsNumber || value || checked || innerText;

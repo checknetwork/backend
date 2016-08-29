@@ -1,6 +1,6 @@
 import {Meteor} from 'meteor/meteor';
 import {check} from 'meteor/check';
-import {Users, I18n} from '/models';
+import {Users, I18n, Countries} from '/models';
 
 export default function () {
   if (Meteor.isDevelopment) {
@@ -19,7 +19,20 @@ export default function () {
           throw new Meteor.Error(403, 'shared.dataCorrupted');
         }
 
-        I18n.upsert({_id: name}, {$set: {section}});
+        const data = {
+          section,
+          version: I18n.version,
+          state: I18n.STATE.EMPTY,
+        };
+
+        I18n.upsert(name, {$set: data}, () => {});
+      },
+
+      i18nSaveEdit(data) {
+        this.unblock();
+        check(data, Object);
+
+        throw new Meteor.Error(202, 'Message', {fields: {}});
       },
     });
   }

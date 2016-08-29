@@ -37,7 +37,7 @@ export default function () {
   Router.getRolesTrigger = (...roles) => {
     return (ctx, redirect) => {
       Router.checkAuth(ctx, redirect);
-      if (!Users.userHasRole(Meteor.userId(), ...roles)) {
+      if (!Users.hasRole(Meteor.userId(), ...roles)) {
         Router.requiredRoutePathname = ctx.path;
         redirect(DEFAULT_ROUTES.NOACCESS);
       }
@@ -50,21 +50,33 @@ export default function () {
   };
 
   Router.start = () => {
-    FlowRouter.initialize();
+    if (!Meteor.loggingIn()) {
+      Router.started = true;
+      FlowRouter.initialize();
+    }
   };
 
   Accounts.onLogin(() => {
     const {requiredRoutePathname} = Router;
+    if (!Router.started) {
+      Router.start();
+    }
+
     if (requiredRoutePathname) {
       Router.requiredRoutePathname = null;
-      FlowRouter.go(Router.requiredRoutePathname);
+      Router.go(requiredRoutePathname);
+    }
+  });
+
+  Accounts.onLoginFailure(() => {
+    if (!Router.started) {
+      Router.start();
     }
   });
 
   Accounts.onLogout(() => {
-    FlowRouter.go(DEFAULT_ROUTES.INDEX);
+    Router.go(DEFAULT_ROUTES.INDEX);
   });
-
 
   return Router;
 }

@@ -7,4 +7,12 @@ export default function () {
 
     return I18n.find(selector);
   });
+
+  Meteor.publish('i18n.list', function i18nList() {
+    if (!Users.isSuperadmin(this.userId)) {
+      return this.ready();
+    }
+
+    return I18n.find({});
+  });
 }
