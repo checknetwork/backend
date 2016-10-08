@@ -1,4 +1,5 @@
 import React from 'react';
+import {Tracker} from 'meteor/tracker';
 import {Grid, Row, Col, Label, ListGroup, ListGroupItem} from 'react-bootstrap';
 
 const paramsSizes = {
@@ -129,3 +130,38 @@ export const List = ({columns, data}) => {
     </ListGroup>
   );
 };
+
+
+export class ListPage extends Tracker.Component {
+  constructor(props) {
+    super(props);
+
+    this.dataKey = '_id';
+
+    this.fields = {};
+    this.filters = {};
+    this.orders = {};
+
+    this.state = {selected: [], hasMore: false, loading: true, data: [], selector: {}, sort: {}};
+  }
+
+  setLoadingState(loading) {
+    this.setState({loading})
+  }
+
+  setData(data) {
+    const dataKeys = _.pick(data, this.dataKey);
+    const selected = _.intersection(this.state.selected, dataKeys);
+
+    this.setState({data, selected});
+  }
+
+  setCollection(collection, transform) {
+    this.autorun(() => {
+      const {selector, sort} = this.state;
+
+      const data = collection.find(selector, {sort, transform}).fetch();
+      this.setData(data);
+    });
+  }
+}
