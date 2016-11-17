@@ -3,18 +3,18 @@ import initSidebar from './sidebar';
 import {mountModal} from './modals';
 
 
-export default function (AppState, Tracker) {
-  const Sidebar = initSidebar(AppState, Tracker);
+export default function (AppState, Router, mount) {
+  const Sidebar = initSidebar(AppState, Router);
 
   const Root = ({content, children}) => {
     const renderedContent = (_.isFunction(content) ? content() : (content || null)) || children;
-    return (<div>{renderedContent}</div>);
+    return (renderedContent);
   };
 
 
   const View = ({content, children}) => {
     const renderedContent = (_.isFunction(content) ? content() : (content || null)) || children;
-    return (<Root><Sidebar/>{renderedContent}</Root>);
+    return (<Root><div className="app-root"><Sidebar/>{renderedContent}</div></Root>);
   };
 
   const NotFound = ({message = 'This page is missed, sorry'}) => (
@@ -24,5 +24,19 @@ export default function (AppState, Tracker) {
     </div>
   );
 
-  return {View, Root, NotFound, mountModal};
+  const mountView = (Component, ...others) => {
+    if (Component) {
+      const props = _.extend({}, ...others);
+      mount(View, {content: () => (<Component {...props}/>)});
+    }
+  };
+
+  const mountRoot = (Component, ...others) => {
+    if (Component) {
+      const props = _.extend({}, ...others);
+      mount(Root, {content: () => (<Component {...props}/>)});
+    }
+  };
+
+  return {View, Root, NotFound, mountView, mountRoot};
 }

@@ -1,47 +1,61 @@
 import React from 'react';
+import {Menu, Header, Button} from 'semantic-ui-react';
 
-export const Page = ({title, actions, children}) => {
+export const ManagedPage = ({title, info, actions, children}) => {
+  const buttonMergedProps = [
+    'basic',
+    'color',
+    'disabled',
+    'icon',
+    'inverted',
+    'loading',
+    'negative',
+    'positive',
+    'primary',
+    'secondary',
+  ];
+
   const renderActions = () => {
-    const actionsMap = _.map(actions, ({label, primary, href, handler}, key) => (
-      <li key={key} onClick={handler}>
-        <a href={(href || '#')}>{label}</a>
-      </li>
-    ));
+    const map = _.map(actions, (action, key) => {
+      const mergedProps = action.props ? action.props : {};
+      const props = _.extend({},
+        _.pick(action, buttonMergedProps),
+        _.pick(mergedProps, buttonMergedProps)
+      );
 
-    return (
-      <div className="collapse navbar-collapse">
-        <ul className="nav navbar-nav navbar-right">
-          {actionsMap}
-        </ul>
-      </div>
-    );
+      const href = mergedProps.href ? mergedProps.href() : action.href;
+      if (href) {
+        props.href = href;
+        props.as = 'a';
+      }
+
+      return (
+        <Menu.Item key={key}>
+          <Button onClick={action.handler} {...props}>{action.label || key}</Button>
+        </Menu.Item>
+      );
+    });
+
+    return (<Menu.Menu position="right">{map}</Menu.Menu>);
   };
 
-  const renderHeader = () => (
-    <nav className="navbar navbar-default page--header">
-      <div className="container">
-        <div className="navbar-header">
-          <span className="navbar-brand">{title}</span>
-        </div>
-        {renderActions()}
-      </div>
-    </nav>
+  const renderTitle = () => (
+    <Menu.Item>
+      <Header>{title}<Header.Subheader>{info}</Header.Subheader></Header>
+    </Menu.Item>
   );
 
   const renderBody = () => (
-    <div className="page--body">
-      <div className="container">
-        {children}
-      </div>
-    </div>
+    <div>{children}</div>
   );
 
   return (
-    <div className="page--container">
-      <div className="page--body has-header">
-        {renderHeader()}
-        {renderBody()}
-      </div>
+    <div className="app-page">
+      <Menu text>
+        {renderTitle()}
+        {renderActions()}
+      </Menu>
+      {renderBody()}
     </div>
   );
 };

@@ -12,12 +12,12 @@ export default function (AppState, Tracker) {
     if (Users.isSuperadmin(Meteor.userId()) && !exists) {
       Meteor.call('i18nReristerLabel', name);
     }
-    return (labels || {})[lang];
+    return (labels || {})[lang] || 'Label missed';
   };
 
   I18n.label = (name, lang, exists = false) => {
     const langToAsk = (lang || AppState.get('lang') || 'en');
-    return I18n.value(name, langToAsk, exists) || 'Label missed';
+    return I18n.value(name, langToAsk, exists);
   };
 
   I18n.tag = (name) => {

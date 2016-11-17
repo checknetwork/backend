@@ -1,207 +1,134 @@
 import React from 'react';
-import {Collapse} from 'react-bootstrap';
+import {composeWithTracker} from 'react-komposer';
+import {Users} from '/models';
 import {Meteor} from 'meteor/meteor';
-import {Users, I18n} from '/models';
+import {Menu, Header} from 'semantic-ui-react';
+import {valuefyMap} from '/client/components';
 
-export default function initSidebar(AppState, Tracker) {
-  const DEFAULT_ACTIVE_ITEM = 'dashboard';
-  const {ROLES} = Users;
+export default function initSidebar(AppState, Router) {
+  const {SUPERADMIN, PARTNER} = Users.ROLES;
 
   const submenuMap = {
-    dashboard: {
-      title: I18n.tag('admin.submenu.dashboard'),
+    management: {
+      label: 'Management',
       icon: 'dashboard',
-      filter: ({role}) => [ROLES.SUPERADMIN, ROLES.PARTNERS].includes(role),
+      filter: ({userRole}) => SUPERADMIN === userRole || PARTNER === userRole,
       items: {
-        overwiev: {label: I18n.tag('admin.submenu.overwiev'), link: '/dashboard/overwiev'},
-        analytics: {label: I18n.tag('admin.submenu.analytics'), link: '/dashboard/analytics'},
-        app: {label: I18n.tag('admin.submenu.app health'), link: '/dashboard/app'},
-        server: {label: I18n.tag('admin.submenu.serverState'), link: '/dashboard/server'},
+        managementConfigs: {label: 'Configs', href: '/management/configs'},
+        managementServers: {label: 'Servers', href: '/management/servers'},
+        managementTasks: {label: 'Background tasks', href: '/management/tasks'},
       },
     },
 
     shop: {
-      title: I18n.tag('admin.submenu.shop'),
+      label: 'Shop',
       icon: 'shopping-cart',
-      filter: ({role, shop}) => [ROLES.SUPERADMIN].includes(role) && Boolean(shop),
+      filter: ({userRole, shopId}) => SUPERADMIN === userRole && Boolean(shopId),
       items: {
-        settings: {label: I18n.tag('admin.submenu.settings'), link: '/shop/settings'},
-        categories: {label: I18n.tag('admin.submenu.categories'), link: '/shop/categories'},
-        brands: {label: I18n.tag('admin.submenu.brands'), link: '/shop/brands'},
-        products: {label: I18n.tag('admin.submenu.products'), link: '/shop/products'},
-        posts: {label: I18n.tag('admin.submenu.magazinePosts'), link: '/shop/posts'},
-        analytics: {label: I18n.tag('admin.submenu.analytics'), link: '/shop/analytics'},
+        shopConfigs: {label: 'Configs', href: '/shop/configs'},
+        shopCategories: {label: 'Categories', href: '/shop/categories'},
+        shopProducts: {label: 'Products', href: '/shop/products'},
+        shopPosts: {label: 'Posts', href: '/shop/posts'},
       },
     },
 
     sites: {
-      title: I18n.tag('admin.submenu.sites'),
+      label: 'Sites (shops)',
       icon: 'television',
-      filter: ({role}) => [ROLES.SUPERADMIN].includes(role),
+      filter: ({userRole}) => SUPERADMIN === userRole,
       items: {
-        sites: {label: I18n.tag('admin.submenu.sites'), link: '/sites/sites'},
-        domains: {label: I18n.tag('admin.submenu.domains'), link: '/sites/domains'},
-        settings: {label: I18n.tag('admin.submenu.settings'), link: '/sites/settings'},
+        sitesSites: {label: 'Sites', href: '/sites/sites'},
+        sitesDomains: {label: 'Domains', href: '/sites/domains'},
+        sitesColors: {label: 'Colors', href: '/sites/settings'},
       },
     },
 
     contents: {
-      title: I18n.tag('admin.submenu.contents'),
+      label: 'Contents',
       icon: 'inbox',
-      filter: ({role}) => [ROLES.SUPERADMIN].includes(role),
+      filter: ({userRole}) => SUPERADMIN === userRole,
       items: {
-        posts: {label: I18n.tag('admin.submenu.magazinePosts'), link: '/contents/posts'},
-        buckets: {label: I18n.tag('admin.submenu.bucketsHealth'), link: '/contents/buckets'},
-        settings: {label: I18n.tag('admin.submenu.settings'), link: '/contents/settings'},
-      },
-    },
-
-    partners: {
-      title: I18n.tag('admin.submenu.partners'),
-      icon: 'users',
-      filter: ({role}) => [ROLES.SUPERADMIN].includes(role),
-      items: {
-        partners: {label: I18n.tag('admin.submenu.partners'), link: '/partners/partners'},
-        settings: {label: I18n.tag('admin.submenu.settings'), link: '/partners/settings'},
-      },
-    },
-
-    seo: {
-      title: I18n.tag('admin.submenu.seoConfig'),
-      icon: 'cog',
-      filter: ({role}) => [ROLES.SUPERADMIN].includes(role),
-      items: {
-        settings: {label: I18n.tag('admin.submenu.settings'), link: '/seo/settings'},
-        analytics: {label: I18n.tag('admin.submenu.analytics'), link: '/seo/analytics'},
-        overwiev: {label: I18n.tag('admin.submenu.overwiev'), link: '/seo/overwiev'},
-        server: {label: I18n.tag('admin.submenu.ssrConfig'), link: '/seo/ssrconfig'},
+        contentsPosts: {label: 'Posts', href: '/contents/posts'},
       },
     },
 
     locales: {
-      title: I18n.tag('admin.submenu.locales'),
+      label: 'Locales',
       icon: 'globe',
-      filter: ({role}) => [ROLES.SUPERADMIN].includes(role),
+      filter: ({userRole}) => SUPERADMIN === userRole,
       items: {
-        countries: {label: I18n.tag('admin.submenu.countries'), link: '/locales/countries'},
-        i18n: {label: I18n.tag('admin.submenu.i18n'), link: '/locales/i18n'},
-        analytics: {label: I18n.tag('admin.submenu.analytics'), link: '#'},
+        localesCountries: {label: 'Countries', href: '/locales/countries'},
+        localesI18n: {label: 'I18n', href: '/locales/i18n'},
       },
     },
 
     users: {
-      title: I18n.tag('admin.submenu.users'),
+      label: 'Users',
       icon: 'user',
-      filter: ({role}) => [ROLES.SUPERADMIN].includes(role),
+      filter: ({userRole}) => SUPERADMIN === userRole,
       items: {
-        users: {label: I18n.tag('admin.submenu.users'), link: '/users/users'},
-        settings: {label: I18n.tag('admin.submenu.settings'), link: '/users/settings'},
+        usersUsers: {label: 'Users', href: '/users/users'},
       },
     },
 
-    logout: {
-      title: I18n.tag('admin.submenu.logout'),
-      icon: 'toggle-left',
-      link: '/logout',
+    account: {
+      label: 'Account',
+      icon: 'user',
+      filter: ({userId}) => Boolean(userId),
+      items: {
+        accountSettings: {label: 'Settings', href: '/account/settings'},
+        accountLogout: {label: 'Logout', href: '/logout'},
+      },
     },
   };
 
-  class Sidebar extends Tracker.Component {
-    constructor(props = {}) {
-      super(props);
+  const Sidebar = ({userRole, shopId, userId, activeItemName}) => {
+    const renderItems = (items) => {
+      return _.map(items, (chunk, key) => {
+        const data = _.extend(chunk, {key, userRole, shopId, userId});
+        const calcs = valuefyMap(chunk, ['href', 'label'], data);
+        const props = {children: calcs.label, active: (key === activeItemName)};
 
-      this.state = {user: {}, activeItem: DEFAULT_ACTIVE_ITEM};
-
-      this.autorun(() => {
-        this.setState({user: Meteor.user()});
-      });
-
-      this.autorun(() => {
-        this.setState({shop: AppState.get('activeShop')});
-      });
-    }
-
-    onToggleActive(key) {
-      let {activeItem} = this.state;
-      const topNavKeys = _.keys(submenuMap);
-
-      activeItem = (key === activeItem || !topNavKeys.includes(key)) ? null : key;
-      this.setState({activeItem});
-    }
-
-    renderTopNav(scope) {
-      return _.map(submenuMap, ({title, icon, filter, items, link}, key) => {
-        if (filter && !filter(scope)) {
-          return (<div key={key}/>);
+        if (calcs.href) {
+          props.as = 'a';
+          props.href = calcs.href;
         }
 
-        const opened = items && (scope.activeItem === key);
-        const subNav = items ? this.renderSubNav(scope, items, opened) : (null);
-
-        const onClick = (e) => {
-          return link ? false : (this.onToggleActive(key) && e.preventDefault());
-        };
-
-        return (
-          <div key={key} className="panel-sidebar-item">
-            <div className="panel-heading" role="tab">
-              <a href={link || '#'} onClick={onClick} className="nav-link">
-                <i className={`fa fa-${icon}`}/> {title || ''}
-              </a>
-            </div>
-            {subNav}
-          </div>
-        );
+        return (<Menu.Item key={key} {...props}/>);
       });
-    }
+    };
 
-    renderSubNav(scope, items, opened) {
-      const itemsNav = _.map(items, ({label, link, filter}, key) => {
-        if (filter && !filter(scope)) {
-          return (<div key={key}/>);
+    const renderGroups = (groups) => {
+      return _.map(groups, (chunk, key) => {
+        const data = _.extend(chunk, {key, userRole, shopId, userId});
+        const props = valuefyMap(chunk, ['filter', 'label'], data);
+
+        if (!props.filter || !chunk.items) {
+          return (null);
         }
 
+        const map = renderItems(chunk.items);
+
         return (
-          <li role="presentation" key={key}>
-            <a href={link} className="nav-link">{label}</a>
-          </li>
+          <Menu.Item key={key}>
+            <Menu.Header>{props.label}</Menu.Header>
+            <Menu.Menu>{map}</Menu.Menu>
+          </Menu.Item>
         );
       });
+    };
 
-      return (
-        <Collapse in={opened}>
-          <div className="panel-collapse">
-            <div className="panel-body">
-              <ul className="panel-sidebar-submenu">
-                {itemsNav}
-              </ul>
-            </div>
-          </div>
-        </Collapse>
-      );
-    }
+    return (<Menu vertical className="left sidebar visible">{renderGroups(submenuMap)}</Menu>);
+  };
 
-    renderNav() {
-      if (!Meteor.userId()) {
-        return (null);
-      }
+  return composeWithTracker((props, onData) => {
+    const data = {
+      userId: Meteor.userId(),
+      userRole: (Meteor.user() || {}).role,
+      shopId: AppState.get('shop'),
+      activeItemName: (Router.current() || {route: {}}).name,
+    };
 
-      const {user, shop, activeItem} = this.state;
-      const scope = {shop, activeItem, role: user.role};
-
-      return this.renderTopNav(scope);
-    }
-
-    render() {
-      return (
-        <div className="sidebar--container">
-          <div className="sidebar--body">
-            {this.renderNav()}
-          </div>
-        </div>
-      );
-    }
-  }
-
-  return Sidebar;
+    onData(null, data);
+  })(Sidebar);
 }

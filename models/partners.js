@@ -11,7 +11,7 @@ const STATE = {
 
 Partners.STATE = STATE;
 
-export default Partners;
+export {Partners};
 
 /**
  * Partners schema

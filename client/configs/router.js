@@ -17,64 +17,81 @@ export default function () {
 
   FlowRouter.wait();
 
-  Router.checkAuth = (ctx, redirect) => {
-    if (!Meteor.userId()) {
-      Router.requiredRoutePathname = ctx.path;
-      redirect(DEFAULT_ROUTES.LOGIN);
-    }
-  };
+  const isLogged = () =>
+    Meteor.userId() && !Meteor.loggingIn();
 
-  Router.getAuthTrigger = () => {
-    return Router.checkAuth;
-  };
+  Router.checkAuth = () =>
+    isLogged();
 
-  Router.getRedirectTrigger = (path) => {
-    return (ctx, redirect) => {
-      redirect(path);
-    };
-  };
+  Router.checkRoles = (roles) =>
+    isLogged() && Users.hasRole(Meteor.userId(), ...roles);
 
-  Router.getRolesTrigger = (...roles) => {
-    return (ctx, redirect) => {
-      Router.checkAuth(ctx, redirect);
-      if (!Users.hasRole(Meteor.userId(), ...roles)) {
+  Router.getRedirectTrigger = (path) =>
+    (ctx, redirect) => redirect(path);
+
+  Router.getAuthTrigger = () =>
+    (ctx, redirect) => {
+      if (!Router.checkAuth()) {
         Router.requiredRoutePathname = ctx.path;
-        redirect(DEFAULT_ROUTES.NOACCESS);
+        return redirect(DEFAULT_ROUTES.LOGIN);
       }
+
+      return ctx;
     };
-  };
+
+  Router.getRolesTrigger = (...roles) =>
+    (ctx, redirect) => {
+      if (!Router.checkAuth()) {
+        Router.requiredRoutePathname = ctx.path;
+        return redirect(DEFAULT_ROUTES.LOGIN);
+      }
+      if (!Router.checkRoles(roles)) {
+        Router.requiredRoutePathname = ctx.path;
+        return redirect(DEFAULT_ROUTES.NOACCESS);
+      }
+
+      return ctx;
+    };
 
   Router.add = (params = {}) => {
     const {path, ...others} = params;
-    FlowRouter.route(path, others);
+    Router.route(path, others);
   };
 
   Router.start = () => {
     if (!Meteor.loggingIn()) {
-      Router.started = true;
-      FlowRouter.initialize();
+      return Router.initialize();
     }
+
+    return Router.wait();
+  };
+
+  Router.routeProps = (params = {}) => {
+    return _.extend(params, {redirect: Router.go});
   };
 
   Accounts.onLogin(() => {
-    const {requiredRoutePathname} = Router;
-    if (!Router.started) {
+    if (!Router._initialized) {
       Router.start();
     }
 
-    if (requiredRoutePathname) {
-      Router.requiredRoutePathname = null;
-      Router.go(requiredRoutePathname);
+    if (Router.requiredRoutePathname) {
+      return Router.go(Router.requiredRoutePathname);
     }
+
+    return Router.go(DEFAULT_ROUTES.INDEX);
   });
 
   Accounts.onLoginFailure(() => {
-    if (!Router.started) {
+    if (!Router._initialized) {
       Router.start();
     }
+
+    Router.go(DEFAULT_ROUTES.LOGIN);
   });
 
   Accounts.onLogout(() => {
+    Router.requiredRoutePathname = null;
     Router.go(DEFAULT_ROUTES.INDEX);
   });
 

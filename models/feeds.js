@@ -2,37 +2,37 @@ import {Mongo} from 'meteor/mongo';
 
 const Feeds = new Mongo.Collection('feeds');
 
-const STATE = {
-  NEW      : 'NEW',
-  IDLE     : 'IDLE',
-  FETCH    : 'FETCH',
-  PARSE    : 'PARSE',
-  ERROR    : 'ERROR',
-  DISABLED : 'DISABLED'
+const PROCESS = {
+  NEW: 'NEW',
+  IDLE: 'IDLE',
+  FETCH: 'FETCH',
+  PARSE: 'PARSE',
+  ERROR: 'ERROR',
+  DISABLED: 'DISABLED',
 };
 
 const UPDATE_INTERVAL = {
-  HOUR       : 'HOUR',
-  HALF_DAY   : 'HALF_DAY',
-  ONE_DAY    : 'ONE_DAY',
-  THREE_DAYS : 'THREE_DAYS',
-  WEEK       : 'WEEK',
-  TWO_WEEKS  : 'TWO_WEEKS',
-  MONTH      : 'MONTH',
-  MANUAL     : 'MANUAL'
+  HOUR: 'HOUR',
+  HALF_DAY: 'HALF_DAY',
+  ONE_DAY: 'ONE_DAY',
+  THREE_DAYS: 'THREE_DAYS',
+  WEEK: 'WEEK',
+  TWO_WEEKS: 'TWO_WEEKS',
+  MONTH: 'MONTH',
+  MANUAL: 'MANUAL',
 };
 
 const FILE_FORMAT = {
-  XML  : 'XML',
-  CSV  : 'CSV',
-  JSON : 'JSON'
+  XML: 'XML',
+  CSV: 'CSV',
+  JSON: 'JSON',
 };
 
-Feeds.STATE = STATE;
+Feeds.PROCESS = PROCESS;
 Feeds.UPDATE_INTERVAL = UPDATE_INTERVAL;
 Feeds.FILE_FORMAT = FILE_FORMAT;
 
-export default Feeds;
+export {Feeds};
 
 /**
  * Feeds schema

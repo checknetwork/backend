@@ -35,4 +35,4 @@ Users.ROLES = ROLES;
 Users.hasRole = userHasRole;
 Users.isSuperadmin = userIsSuperadmin;
 
-export default Users;
+export {Users};

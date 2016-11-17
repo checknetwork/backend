@@ -1,24 +1,22 @@
 import React from 'react';
 import {Users} from '/models';
-import {CountriesListPage} from './components';
+import {CountriesListPage, CountriesItemPage} from './components';
 
 export default function (scope) {
-  const {Router, Layouts, mount} = scope;
+  const {Router, Layouts} = scope;
 
   Router.add({
+    name: 'localesCountries',
     path: '/locales/countries/:action?/:id?',
     triggersEnter: [Router.getRolesTrigger(Users.ROLES.SUPERADMIN)],
     action(params) {
-      const actions = {
+      const views = {
         list: CountriesListPage,
-        edit: null,
-        clone: null,
+        edit: CountriesItemPage,
+        clone: CountriesItemPage,
       };
 
-      const Controller = actions[params.action] || actions.list;
-      if (Controller) {
-        mount(Layouts.View, {content: () => (<CountriesListPage {...params}/>)});
-      }
+      Layouts.mountView(views[params.action] || views.list, params, {router: Router});
     },
   });
 }

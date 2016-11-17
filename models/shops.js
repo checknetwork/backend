@@ -20,4 +20,4 @@ if (Meteor.isClient) {
   };
 }
 
-export default Shops;
+export {Shops};

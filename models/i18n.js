@@ -10,4 +10,4 @@ I18n.STATE = {
 
 I18n.version = 2;
 
-export default I18n;
+export {I18n};

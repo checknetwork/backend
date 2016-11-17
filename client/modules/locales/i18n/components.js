@@ -2,8 +2,8 @@ import Tracker from 'tracker-component';
 import {Meteor} from 'meteor/meteor';
 import {I18n, Countries} from '/models';
 import React from 'react';
-import {List, Fields, parseForm, Page} from '/client/components';
-import {Panel} from 'react-bootstrap';
+import {ManagedList, ManagedForm} from '/client/components';
+
 
 export class I18nListPage extends Tracker.Component {
   constructor(props) {
@@ -26,17 +26,14 @@ export class I18nListPage extends Tracker.Component {
 
     const columns = {
       section: {
-        label: I18n.tag('i18n.list.section'),
-        primary: false,
+        label: 'Section',
       },
       name: {
-        label: I18n.tag('i18n.list.name'),
-        primary: true,
+        label: 'Name',
         field: '_id',
       },
       state: {
-        label: I18n.tag('i18n.list.state'),
-        states: {warning: [STATE.MISSED], danger: [STATE.EMPTY], success: [STATE.DONE]},
+        label: 'State',
       },
 
       href({_id}) {
@@ -45,9 +42,9 @@ export class I18nListPage extends Tracker.Component {
     };
 
     return (
-      <Page title={I18n.tag('i18n.list.header')}>
-        <List columns={columns} data={this.state.data}/>
-      </Page>
+      <div title={I18n.tag('i18n.list.header')}>
+        <ManagedList columns={columns} data={this.state.data}/>
+      </div>
     );
   }
 }
@@ -69,7 +66,6 @@ export class I18nEditPage extends Tracker.Component {
 
   onDone(e) {
     e.preventDefault();
-    const data = parseForm(this.refs.data);
 
     this.setState({errors: {}});
     Meteor.call('i18nSaveEdit', data, (err) => {
@@ -100,13 +96,9 @@ export class I18nEditPage extends Tracker.Component {
     });
 
     return (
-      <Page title={I18n.tag('admin.i18n.editHeader')} actions={actions}>
-        <Panel>
-          <form ref="data" action="">
-            <Fields fields={fields} data={this.state.data} errors={this.state.errors}/>
-          </form>
-        </Panel>
-      </Page>
+      <div title={I18n.tag('admin.i18n.editHeader')} actions={actions}>
+        <ManagedForm ref="data" action=""/>
+      </div>
     );
   }
 }

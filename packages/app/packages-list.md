@@ -1,1 +1,0 @@
-meteor-base mobile-experience es5-shim ecmascript jquery reactive-dict meteor-base mobile-experience mongo static-html accounts-password kadira:flow-router percolate:synced-cron percolate:migrations fourseven:scss

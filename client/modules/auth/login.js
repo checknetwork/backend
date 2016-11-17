@@ -1,70 +1,98 @@
 import React from 'react';
-import {I18n} from '/models';
 import {Meteor} from 'meteor/meteor';
-import {Panel, Row, Col, Grid, Button, ButtonToolbar, Image} from 'react-bootstrap';
-import {Fields, parseForm} from '/client/components';
+import {Accounts} from 'meteor/accounts-base';
+import {Grid, Segment, Image, Button, Divider, Modal, Header} from 'semantic-ui-react';
+import {ManagedForm} from '/client/components';
 
-class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {errors: {}};
-  }
+const Login = React.createClass({
+  getInitialState() {
+    return {resetModalOpened: false};
+  },
 
-  onSubmit(e) {
-    e.preventDefault();
-
-    const {email, password} = parseForm(e.target);
-    this.setState({errors: {}});
-
-    Meteor.loginWithPassword(email, password, (err) => {
-      if (!err) {
-        return;
-      }
-
-      this.setState({errors: {
-        email: I18n.tag('common.login.wrongAuthData'),
-        password: I18n.tag('common.login.wrongAuthData'),
-      }});
-    });
-  }
+  handleResetModal() {
+    const resetModalOpened = !this.state.resetModalOpened;
+    this.setState({resetModalOpened});
+  },
 
   render() {
-    const {errors} = this.state;
-    const fields = {
-      email: {
-        type: 'string',
-        label: I18n.tag('common.login.email'),
+    const formProps = {
+      fields: {
+        email: {
+          required: true,
+        },
+        password: {
+          type: 'password',
+          required: true,
+        },
       },
-      password: {
-        type: 'password',
-        label: I18n.tag('common.login.password'),
+      compact: true,
+      submit: 'Login',
+      onSubmit(e, form) {
+        e.preventDefault();
+        Meteor.loginWithPassword(form.email, form.password);
       },
     };
 
     return (
-      <Grid>
-        <Row style={{paddingTop: '25vh'}}>
-          <Col sm={6} smOffset={3} md={4} mdOffset={4}>
-            <Row style={{paddingBottom: 20}}>
-              <Col xs={6} xsOffset={3} sm={8} smOffset={2}>
-                <Image src="/assets/images/tcn-logo.png" responsive/>
-              </Col>
-            </Row>
-            <Panel>
-              <form action="/" name="login" onSubmit={(e) => this.onSubmit(e)}>
-                <Fields fields={fields} errors={errors}/>
-                <ButtonToolbar>
-                  <Button bsStyle="primary" type="submit">{I18n.tag('common.login.login')}</Button>
-                  <Button type="button">{I18n.tag('common.login.forgotpassword')}</Button>
-                </ButtonToolbar>
-              </form>
-            </Panel>
-          </Col>
-        </Row>
+      <Grid verticalAlign="middle" centered>
+        <Grid.Column style={{maxWidth: 380}}>
+          <Image src="/assets/images/tcn-logo.png" fluid style={{padding: 20}}/>
+          <Segment raised>
+            <ManagedForm {...formProps}/>
+          </Segment>
+          <Button fluid onClick={this.handleResetModal}>Forgot password</Button>
+          <Divider hidden fitted/>
+          <Button fluid as="a" href="#">Become a partner</Button>
+
+          <ForgotPasswordModal open={this.state.resetModalOpened} handleClose={this.handleResetModal}/>
+        </Grid.Column>
       </Grid>
     );
-  }
-}
+  },
+});
+
+const ForgotPasswordModal = ({open, handleClose}) => {
+  const formProps = {
+    fields: {
+      email: {
+        type: 'string',
+        label: 'Email',
+      },
+    },
+    compactWidth: true,
+    submitText: 'Reset password',
+    onSubmit(e, formData) {
+      e.preventDefault();
+      Accounts.forgotPassword(formData, handleClose);
+    },
+    onCancel() {
+      handleClose();
+    },
+  };
+
+  return (
+    <Modal basic open={open} onClose={handleClose}>
+      <Modal.Content>
+        <Modal.Description>
+          <Grid verticalAlign="middle" centered>
+            <Grid.Column style={{maxWidth: 380}}>
+              <Segment raised>
+                <Header>
+                  Reset password
+                  <Header.Subheader as="p">
+                    Fill your email address you are registered with and
+                    we send you a secret link to reset the password
+                  </Header.Subheader>
+                </Header>
+                <ManagedForm {...formProps}/>
+              </Segment>
+            </Grid.Column>
+          </Grid>
+        </Modal.Description>
+      </Modal.Content>
+    </Modal>
+  );
+};
 
 
 export default function (scope) {
